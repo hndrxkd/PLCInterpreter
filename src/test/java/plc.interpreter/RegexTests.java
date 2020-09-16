@@ -102,6 +102,57 @@ public class RegexTests {
         );
     }
 
+    @ParameterizedTest
+    @MethodSource
+    public void testIdentifierRegex(String test, String input, boolean success) {
+        test(input, Regex.IDENTIFIER, success);
+    }
+
+    public static Stream<Arguments> testIdentifierRegex() {
+        return Stream.of(
+                Arguments.of("Alphanumeric", "getName5", true),
+                Arguments.of("Underscores", "_myvariable3_", true),
+                Arguments.of("Special Characters", "is-empty?", true),
+                Arguments.of("Begins with Digit", "42=life", false),
+                Arguments.of("Period", ".", false),
+                Arguments.of("Nonspecial Characters", "why,are,there,commas", false)
+
+        );
+    }
+
+
+    @ParameterizedTest
+    @MethodSource
+    public void testNumberRegex(String test, String input, boolean success) {
+        test(input, Regex.NUMBER, success);
+    }
+
+    public static Stream<Arguments> testNumberRegex() {
+        return Stream.of(
+                Arguments.of("One or More Digits", "1", true),
+                Arguments.of("Positive or Negative", "-1.0", true),
+                Arguments.of("Followed by Decimal Point and One or More Digits", "007.000", true),
+                Arguments.of("Begins with Decimal Point", ".5", false),
+                Arguments.of("Ends with Decimal Point", "1.", false)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    public void testStringRegex(String test, String input, boolean success) {
+        test(input, Regex.STRING, success);
+    }
+
+    public static Stream<Arguments> testStringRegex() {
+        return Stream.of(
+                Arguments.of("Start and End with Double Quote", "\" \"", true),
+                Arguments.of("Alphabetic Characters", "\"abc\"", true),
+                Arguments.of("Valid Escape Sequence", "\"Hello,\nWorld!\"", true),
+                Arguments.of("Missing Double Quote", "\"unterminated", false),
+                Arguments.of("Invalid Escape Sequence", "\"invalid\\escape\"", false)
+        );
+    }
+
     /**
      * Asserts that the input matches the given pattern and returns the matcher
      * for additional assertions.
