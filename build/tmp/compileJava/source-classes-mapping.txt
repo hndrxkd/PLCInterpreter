@@ -1,2 +1,10 @@
 plc.interpreter/Regex.java
  plc.interpreter.Regex
+plc.interpreter/Lexer.java
+ plc.interpreter.Lexer
+ plc.interpreter.Lexer$CharStream
+plc.interpreter/ParseException.java
+ plc.interpreter.ParseException
+plc.interpreter/Token.java
+ plc.interpreter.Token
+ plc.interpreter.Token$Type

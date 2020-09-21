@@ -1,2 +1,4 @@
 plc.interpreter/RegexTests.java
  plc.interpreter.RegexTests
+plc.interpreter/LexerTests.java
+ plc.interpreter.LexerTests

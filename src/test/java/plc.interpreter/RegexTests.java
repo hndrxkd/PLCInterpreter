@@ -184,7 +184,7 @@ public class RegexTests {
                 Arguments.of("Valid Escape Sequence", "\"Hello,\nWorld!\"", true),
                 Arguments.of("Missing Double Quote", "\"unterminated", false),
                 Arguments.of("Invalid Escape Sequence", "\"invalid\\escape\"", false),
-                Arguments.of("Missing quote" , "No qutoes to mark string" , false),
+                Arguments.of("Missing quote" , "No quotes to mark string" , false),
                 Arguments.of("Random character without escape", "\"\\x\"" , false),
                 Arguments.of("\"", "\"" , false),
                 Arguments.of("Accidentally repeated escaped character" , "\"Hello,\nn World!\"", true),
