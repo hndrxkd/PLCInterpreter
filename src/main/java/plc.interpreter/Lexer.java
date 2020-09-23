@@ -40,6 +40,11 @@ public final class Lexer {
      * also handle skipping whitespace.
      */
     List<Token> lex() throws ParseException {
+        List<Token> tokens;
+
+        while(!chars.has(0)){
+
+        }
 
 
         throw new UnsupportedOperationException(); //TODO
@@ -83,26 +88,26 @@ public final class Lexer {
      */
     Token lexToken() throws ParseException {
 
-        if (match("[0-9]")){
-            lexNumber();
-        }else if(match("[a-zA-Z\\*\\?:!/<>=]") | (match("\\.") && peek(" "))) {
-            lexIdentifier();
+        if (match("[0-9]") | (match("[\\+-]") && peek("[0-9]"))){
+            return lexNumber();
+        }else if(match("[a-zA-Z\\*\\?:!/<>_=]") | (match("\\.") && !peek(" "))) {
+            return lexIdentifier();
         }
 
         throw new UnsupportedOperationException(); //TODO
     }
 
     Token lexIdentifier() {
-        while (match("[a-zA-Z0-9\\.\\+\\-=!\\?:/\\*<>]") ){
-
-        }
-        throw new UnsupportedOperationException(); //TODO
+        while (match("[a-zA-Z0-9\\.\\+\\-=!_\\?:/\\*<>]") ){}
+        return chars.emit(Token.Type.IDENTIFIER);
     }
 
     Token lexNumber() {
-        if(!match(("[0-9]"))){
-
+        while((match("[0-9]"))){}
+        if(match("\\.","[0-9]")){
+            while((match("[0-9]"))){}
         }
+
         return chars.emit(Token.Type.NUMBER);
 
         //TODO
@@ -118,15 +123,19 @@ public final class Lexer {
      * return true for the sequence {@code 'a', 'b', 'c'}
      */
     boolean peek(String... patterns) {
-       for (String regex : patterns){
-           int pattern = 0;
-           if (Pattern.matches(regex, Character.toString(chars.get(pattern)))) {
-               pattern++;
-           }else {
-               return false;
-           }
-       }
-        return true;
+        try {
+            int pattern = 0;
+            for (String regex : patterns) {
+                if (Pattern.matches(regex, Character.toString(chars.get(pattern)))) {
+                    pattern++;
+                } else {
+                    return false;
+                }
+            }
+            return true;
+        }catch(Exception e){
+            return false;
+        }
 
     }
 
@@ -136,14 +145,24 @@ public final class Lexer {
      * if the characters matched.
      */
     boolean match(String... patterns) {
-        for (String regex : patterns){
-            if (Pattern.matches(regex, Character.toString(chars.get(0)))) {
-                chars.advance();
-            }else {
-                return false;
+        int index = chars.index;
+        int length = chars.length;
+        try {
+            for (String regex : patterns) {
+                if (Pattern.matches(regex, Character.toString(chars.get(0)))) {
+                        chars.advance();
+                } else {
+                    chars.index = index;
+                    chars.length = length;
+                    return false;
+                }
             }
+            return true;
+        }catch(Exception e){
+            chars.index = index;
+            chars.length = length;
+            return false;
         }
-        return true;
     }
 
     /**
