@@ -28,7 +28,8 @@ final class LexerTests {
                 Arguments.of("is-empty?", true),
                 Arguments.of("<=>", true),
                 Arguments.of("42=life", false),
-                Arguments.of("why,are,there,commas,", false)
+                Arguments.of("why,are,there,commas,", false),
+                Arguments.of(". ", false)
         );
     }
 
@@ -44,7 +45,8 @@ final class LexerTests {
                 Arguments.of("-1.0", true),
                 Arguments.of("007.000", true),
                 Arguments.of("1.", false),
-                Arguments.of(".5", false)
+                Arguments.of(".5", false),
+                Arguments.of("0.5.7", false)
         );
     }
 
@@ -75,7 +77,8 @@ final class LexerTests {
                 Arguments.of("(", true),
                 Arguments.of("#", true),
                 Arguments.of(" ", false),
-                Arguments.of("\t", false)
+                Arguments.of("\t", false),
+                Arguments.of(". ", true)
         );
     }
 

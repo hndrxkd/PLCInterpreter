@@ -40,14 +40,25 @@ public final class Lexer {
      * also handle skipping whitespace.
      */
     List<Token> lex() throws ParseException {
-        List<Token> tokens;
+        List<Token> tokens = new ArrayList<>();
 
-        while(!chars.has(0)){
-
+        while(chars.has(0)){
+            if(peek(" ")){
+                chars.advance();
+                chars.reset();
+            }
+            tokens.add(lexToken());
+            for (Token tok : tokens){
+                System.out.println(tok.getLiteral());
+            }
         }
+        for (Token tok : tokens){
+            System.out.println(tok.getLiteral());
+        }
+        return tokens;
 
 
-        throw new UnsupportedOperationException(); //TODO
+        //throw new UnsupportedOperationException(); //TODO
     }
 
     /**
@@ -81,6 +92,7 @@ public final class Lexer {
      *         if (!match("\'")) {
      *             throw new ParseException("Unterminated character literal.", chars.index);
      *         }
+     *         }
      *         return chars.emit(Token.Type.CHARACTER);
      *     }
      * }
@@ -88,13 +100,18 @@ public final class Lexer {
      */
     Token lexToken() throws ParseException {
 
-        if (match("[0-9]") | (match("[\\+-]") && peek("[0-9]"))){
+        if (match("[0-9]") | peek("[\\+-]","[0-9]")){
             return lexNumber();
-        }else if(match("[a-zA-Z\\*\\?:!/<>_=]") | (match("\\.") && !peek(" "))) {
+        }else if(match("[a-zA-Z\\*\\?:!/<>_\\\\=\\+-]") | (match("\\.", "[a-zA-Z\\\\*\\\\?:!/<>_\\\\\\\\=\\\\+-]"))) {
             return lexIdentifier();
+        }else if (match("\"")){
+            return lexString();
+        }else if(match("[(#)\\[\\]]") | match("\\."," " )) {
+            return chars.emit(Token.Type.OPERATOR);
         }
 
-        throw new UnsupportedOperationException(); //TODO
+
+       throw new ParseException(" couldnt parse", chars.index); //TODO
     }
 
     Token lexIdentifier() {
@@ -103,6 +120,7 @@ public final class Lexer {
     }
 
     Token lexNumber() {
+        match("[\\+-]");
         while((match("[0-9]"))){}
         if(match("\\.","[0-9]")){
             while((match("[0-9]"))){}
@@ -114,7 +132,18 @@ public final class Lexer {
     }
 
     Token lexString() throws ParseException {
-        throw new UnsupportedOperationException(); //TODO
+        while(chars.has(0)){
+            if(peek("\\\\")){
+                if(!match("\\\\","[bnrt\'\"\\\\]")){
+                    throw new ParseException("could not parse", chars.index);
+                }
+            }else if(match("\"")){
+                return chars.emit(Token.Type.STRING);
+            }else if(peek(".")){
+                match(".");
+            }
+        }
+        throw new ParseException("could not parse", chars.index); //TODO
     }
 
     /**
