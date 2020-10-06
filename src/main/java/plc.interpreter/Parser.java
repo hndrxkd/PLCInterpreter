@@ -36,10 +36,16 @@ public final class Parser {
      * {@link Ast.Term} with the identifier {@code "source"}.
      */
     private Ast parse() {
-        List<Ast> ast = new ArrayList<>();
-        ast.add(parseAst());
-        return new Ast.Term("source", ast);
-        //throw new UnsupportedOperationException(); //TODO
+
+        if(tokens.has(0)) {
+            List<Ast> ast = new ArrayList<>();
+            while(tokens.has(0)) {
+                ast.add(parseAst());
+            }
+            return new Ast.Term("source", ast);
+        }
+        return new Ast.Term("source" , new ArrayList<>());
+//        throw new ParseException("Was expecting there to be tokens", tokens.index ); //TODO
     }
 
     /**
@@ -80,11 +86,8 @@ public final class Parser {
      * </pre>
      */
     private Ast parseAst() {
-//        if(!match("(")){
-//            throw new ParseException("Expected opening parenthesis", tokens.index);
-//        }
-       // List<Ast> ast = new ArrayList<>();
-        while(!peek(")")) {
+
+        while(tokens.has(0)) {
             if (peek(Token.Type.STRING)) {
                 return parseStringLiteral();
             } else if (peek(Token.Type.NUMBER)) {
@@ -96,25 +99,32 @@ public final class Parser {
             }
         }
 
-        throw new ParseException("testing " , 34 );
+        throw new ParseException("Closing parenthesis before opening" , tokens.index );
 
     }
+
 //gets a list adds term.
     private Ast parseTerm() {
         List<Ast> args = new ArrayList<>();
         String term;
 
         if(match(Token.Type.OPERATOR)) {
+            if(peek(")") | peek("]")){
+                throw new ParseException("Was expecting identifier, got function end" , tokens.index);
+            }
+            if(!peek(Token.Type.IDENTIFIER)){
+                throw new ParseException("Was expecting an Identifier" , tokens.index);
+            }
             term = tokens.get(0).getLiteral();
+
             tokens.advance();
 
-            System.out.print("term created: " + term);
             while(!match(")") && !match("]")) {
                 args.add(parseAst());
             }
             return new Ast.Term(term , args );
         }
-        throw new ParseException("tested " , 1);
+        throw new ParseException("Expected an opening parenthesis " , tokens.index);
 
     }
 //this parses identifier
@@ -163,8 +173,13 @@ public final class Parser {
     }
 
     private Ast parseStringLiteral() {
+        
         String text = tokens.get(0).getLiteral();
         text = text.replaceAll("\"", "");
+        text = text.replaceAll("\\\\n", "\n" );
+        text = text.replaceAll("\\\\r", "\r" );
+        text = text.replaceAll("\\\\t", "\t" );
+
         Ast string = new Ast.StringLiteral(text);
         tokens.advance();
         return string;
@@ -229,7 +244,7 @@ public final class Parser {
          * Returns true if there is a token at index + offset.
          */
         public boolean has(int offset) {
-            return tokens.get(index + offset) != null; //TODO
+            return index + offset < tokens.size(); //TODO
         }
 
         /**

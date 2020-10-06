@@ -43,7 +43,7 @@ public final class Lexer {
         List<Token> tokens = new ArrayList<>();
 
         while(chars.has(0)){
-            if(peek(" ")){
+            if(peek(" ") | peek("[\\n\\r\\t]")){
                 chars.advance();
                 chars.reset();
             }
