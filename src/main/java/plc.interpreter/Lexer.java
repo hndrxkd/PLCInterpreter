@@ -48,13 +48,9 @@ public final class Lexer {
                 chars.reset();
             }
             tokens.add(lexToken());
-            for (Token tok : tokens){
-                System.out.println(tok.getLiteral());
-            }
+
         }
-        for (Token tok : tokens){
-            System.out.println(tok.getLiteral());
-        }
+
         return tokens;
 
 

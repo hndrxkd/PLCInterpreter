@@ -31,13 +31,15 @@ public final class Parser {
     public static Ast parse(String input) {
         return new Parser(input).parse();
     }
-
     /**
      * Repeatedly parses a list of ASTs, returning the list as arguments of an
      * {@link Ast.Term} with the identifier {@code "source"}.
      */
     private Ast parse() {
-        throw new UnsupportedOperationException(); //TODO
+        List<Ast> ast = new ArrayList<>();
+        ast.add(parseAst());
+        return new Ast.Term("source", ast);
+        //throw new UnsupportedOperationException(); //TODO
     }
 
     /**
@@ -78,7 +80,95 @@ public final class Parser {
      * </pre>
      */
     private Ast parseAst() {
-        throw new UnsupportedOperationException(); //TODO
+//        if(!match("(")){
+//            throw new ParseException("Expected opening parenthesis", tokens.index);
+//        }
+       // List<Ast> ast = new ArrayList<>();
+        while(!peek(")")) {
+            if (peek(Token.Type.STRING)) {
+                return parseStringLiteral();
+            } else if (peek(Token.Type.NUMBER)) {
+                return parseNumberLiteral();
+            } else if (peek(Token.Type.IDENTIFIER)) {
+                return parseIdentifier();
+            } else if (peek("(") | peek("[")) {
+                return parseTerm();
+            }
+        }
+
+        throw new ParseException("testing " , 34 );
+
+    }
+//gets a list adds term.
+    private Ast parseTerm() {
+        List<Ast> args = new ArrayList<>();
+        String term;
+
+        if(match(Token.Type.OPERATOR)) {
+            term = tokens.get(0).getLiteral();
+            tokens.advance();
+
+            System.out.print("term created: " + term);
+            while(!match(")") && !match("]")) {
+                args.add(parseAst());
+            }
+            return new Ast.Term(term , args );
+        }
+        throw new ParseException("tested " , 1);
+
+    }
+//this parses identifier
+    private Ast parseIdentifier() {
+        Ast ident = new Ast.Identifier(tokens.get(0).getLiteral());
+        tokens.advance();
+        return ident;
+
+//        List<Ast> ident = new ArrayList<>();
+//        if(match(Token.Type.IDENTIFIER)) {
+//            Ast temp = new Ast.Identifier(tokens.get(0).getLiteral());
+//            ident.add(temp);
+//        }
+//
+//        return ident;
+
+        //TODO
+    }
+
+    private Ast parseNumberLiteral() {
+        BigDecimal big = new BigDecimal(tokens.get(0).getLiteral());
+        Ast number = new Ast.NumberLiteral(big);
+        tokens.advance();
+        return number;
+
+
+//        List<Ast> nums = new ArrayList<>();
+//
+//        BigDecimal big = new BigDecimal(tokens.get(0).getLiteral());
+//        Ast number = new Ast.NumberLiteral(big);
+//        nums.add(number);
+//
+//        tokens.advance();
+//
+//        if(peek(Token.Type.NUMBER)){
+//            nums.addAll(parseNumberLiteral());
+//        }
+//
+//        return nums;
+
+//        List<Ast> nums = new ArrayList<>();
+//        while(peek(Token.Type.NUMBER)){
+//           nums.add(new Ast.NumberLiteral(tokens.get(1).getLiteral());
+//        }
+//        return nums;
+    }
+
+    private Ast parseStringLiteral() {
+        String text = tokens.get(0).getLiteral();
+        text = text.replaceAll("\"", "");
+        Ast string = new Ast.StringLiteral(text);
+        tokens.advance();
+        return string;
+
     }
 
     /**
@@ -94,7 +184,11 @@ public final class Parser {
     private boolean peek(Object... patterns) {
         int index = 0;
         for (int i = 0 ; i < patterns.length ; i++) {
-            if (patterns[i].getClass().toString().equals(tokens.get(index).getType().toString()) | patterns[i].toString().equals(tokens.get(index).getLiteral()))   {
+//            if(patterns[i] instanceof Token.Type){
+            if (patterns[i] == tokens.get(index).getType()) {
+                    index++;
+            }
+            else if (patterns[i].toString().equals(tokens.get(index).getLiteral())) {
                 index++;
             } else {
                 return false;
@@ -108,10 +202,13 @@ public final class Parser {
      * and advances the token stream.
      */
     private boolean match(Object... patterns) {
+        int index = tokens.index;
+
         for(Object type: patterns) {
             if(tokens.has(0) && peek(type)) {
                 tokens.advance();
             }else{
+                tokens.index = index;
                 return false;
             }
         }
