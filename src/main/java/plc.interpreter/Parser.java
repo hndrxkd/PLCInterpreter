@@ -173,7 +173,7 @@ public final class Parser {
     }
 
     private Ast parseStringLiteral() {
-        
+
         String text = tokens.get(0).getLiteral();
         text = text.replaceAll("\"", "");
         text = text.replaceAll("\\\\n", "\n" );
