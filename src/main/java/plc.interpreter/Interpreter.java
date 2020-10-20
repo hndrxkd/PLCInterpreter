@@ -2,6 +2,7 @@ package plc.interpreter;
 
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -111,8 +112,8 @@ public final class Interpreter {
         });
         scope.define("-", (Function<List<Ast>, Object>) args -> {
                 List<Object> evaluated = args.stream().map(this::eval).collect(Collectors.toList());
-                if(evaluated.size() > 0) {
-                    BigDecimal result = requireType(BigDecimal.class, evaluated.get(0));
+                if(!evaluated.isEmpty()) {
+                    BigDecimal result = evaluated.size() > 1 ? requireType(BigDecimal.class, evaluated.get(0)) : BigDecimal.ZERO.subtract(requireType(BigDecimal.class , evaluated.get(0)));
                     evaluated.remove(0);
 
                     for (Object obj : evaluated) {
@@ -125,13 +126,52 @@ public final class Interpreter {
         });
         scope.define("*" , (Function<List<Ast> , Object>) args -> {
             List<Object> evaluated = args.stream().map(this::eval).collect(Collectors.toList());
-             BigDecimal result = BigDecimal.ONE;
+            BigDecimal result = BigDecimal.ONE;
 
-             for(Object obj : evaluated) {
-                 result = result.multiply(requireType(BigDecimal.class , obj));
-             }
-             return result;
+            for(Object obj : evaluated) {
+                result = result.multiply(requireType(BigDecimal.class , obj));
+            }
+            return result;
 
+        });
+        scope.define("/" , (Function<List<Ast> , Object>) args -> {
+            List<Object> evaluated = args.stream().map(this::eval).collect(Collectors.toList());
+            if(!evaluated.isEmpty()) {
+                BigDecimal result = evaluated.size() > 1 ? requireType(BigDecimal.class , evaluated.get(0)) : BigDecimal.ZERO;
+
+                for (Object obj : evaluated) {
+                    result = result.divide(requireType(BigDecimal.class, obj), RoundingMode.HALF_EVEN);
+                }
+                return result;
+            }else {
+                throw new EvalException("nah");
+            }
+        });
+        scope.define("and" , (Function<List<Ast> , Object>) args -> {
+            for(Ast arg : args ) {
+                if (!requireType(boolean.class, eval(arg))) {
+                    return false;
+                }
+            }
+            return true;
+        });
+        scope.define("or" , (Function<List<Ast> , Object>) args -> {
+            for(Ast arg : args ) {
+                if (requireType(Boolean.class, eval(arg))) {
+                    return true;
+                }
+            }
+            return false;
+        });
+        scope.define("not" , (Function<List<Ast> , Object>) args -> {
+            boolean value = requireType(Boolean.class , args.get(0));
+            return !value;
+        });
+        scope.define("true" , (Function<List<Ast> , Object>) args -> {
+            return true;
+        });
+        scope.define("false" , (Function<List<Ast> , Object>) args -> {
+            return false;
         });
         
 

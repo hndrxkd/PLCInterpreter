@@ -72,6 +72,53 @@ final class InterpreterTests {
         );
     }
 
+    @ParameterizedTest
+        @MethodSource
+        void testDivision(String test, Ast ast, BigDecimal expected) {
+            test(ast, expected, Collections.emptyMap());
+        }
+
+        private static Stream<Arguments> testDivision() {
+            return Stream.of(
+                    Arguments.of("Zero Arguments", new Ast.Term("/", Arrays.asList()), null),
+                    Arguments.of("Single Argument", new Ast.Term("/", Arrays.asList(
+                            new Ast.NumberLiteral(BigDecimal.TEN)
+                    )), BigDecimal.valueOf(0)),
+                    Arguments.of("Multiple Arguments", new Ast.Term("/", Arrays.asList(
+                            new Ast.NumberLiteral(new BigDecimal("1.000")),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(2)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(3))
+                )), BigDecimal.valueOf(0.167))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testAnd(String test, Ast ast, BigDecimal expected) {
+        test(ast, expected, Collections.emptyMap());
+    }
+
+    private static Stream<Arguments> testAnd() {
+        return Stream.of(
+                Arguments.of("and true", new Ast.Term("and", Arrays.asList(
+                        new Ast.Identifier("true")
+                )), true)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testOr(String test, Ast ast, BigDecimal expected) {
+        test(ast, expected, Collections.emptyMap());
+    }
+
+    private static Stream<Arguments> testOr() {
+        return Stream.of(
+                Arguments.of("and true", new Ast.Term("or", Arrays.asList(
+                        new Ast.Identifier("true")
+                )), true)
+        );
+    }
     private static void test(Ast ast, Object expected, Map<String, Object> map) {
         Scope scope = new Scope(null);
         map.forEach(scope::define);

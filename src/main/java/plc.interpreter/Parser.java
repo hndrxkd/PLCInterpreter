@@ -149,27 +149,6 @@ public final class Parser {
         Ast number = new Ast.NumberLiteral(big);
         tokens.advance();
         return number;
-
-
-//        List<Ast> nums = new ArrayList<>();
-//
-//        BigDecimal big = new BigDecimal(tokens.get(0).getLiteral());
-//        Ast number = new Ast.NumberLiteral(big);
-//        nums.add(number);
-//
-//        tokens.advance();
-//
-//        if(peek(Token.Type.NUMBER)){
-//            nums.addAll(parseNumberLiteral());
-//        }
-//
-//        return nums;
-
-//        List<Ast> nums = new ArrayList<>();
-//        while(peek(Token.Type.NUMBER)){
-//           nums.add(new Ast.NumberLiteral(tokens.get(1).getLiteral());
-//        }
-//        return nums;
     }
 
     private Ast parseStringLiteral() {
