@@ -1,5 +1,7 @@
 plc.interpreter/Regex.java
  plc.interpreter.Regex
+plc.interpreter/EvalException.java
+ plc.interpreter.EvalException
 plc.interpreter/Lexer.java
  plc.interpreter.Lexer
  plc.interpreter.Lexer$CharStream
@@ -8,3 +10,18 @@ plc.interpreter/ParseException.java
 plc.interpreter/Token.java
  plc.interpreter.Token
  plc.interpreter.Token$Type
+plc.interpreter/Parser.java
+ plc.interpreter.Parser
+ plc.interpreter.Parser$1
+ plc.interpreter.Parser$TokenStream
+plc.interpreter/Ast.java
+ plc.interpreter.Ast
+ plc.interpreter.Ast$Identifier
+ plc.interpreter.Ast$NumberLiteral
+ plc.interpreter.Ast$StringLiteral
+ plc.interpreter.Ast$Term
+plc.interpreter/Scope.java
+ plc.interpreter.Scope
+plc.interpreter/Interpreter.java
+ plc.interpreter.Interpreter
+ plc.interpreter.Interpreter$1

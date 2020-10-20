@@ -149,7 +149,7 @@ public final class Interpreter {
         });
         scope.define("and" , (Function<List<Ast> , Object>) args -> {
             for(Ast arg : args ) {
-                if (!requireType(boolean.class, eval(arg))) {
+                if (!requireType(Boolean.class, eval(arg))) {
                     return false;
                 }
             }
@@ -167,12 +167,8 @@ public final class Interpreter {
             boolean value = requireType(Boolean.class , args.get(0));
             return !value;
         });
-        scope.define("true" , (Function<List<Ast> , Object>) args -> {
-            return true;
-        });
-        scope.define("false" , (Function<List<Ast> , Object>) args -> {
-            return false;
-        });
+        scope.define("true" , Boolean.TRUE);
+        scope.define("false" , Boolean.FALSE);
         
 
         //TODO: Additional standard library functions

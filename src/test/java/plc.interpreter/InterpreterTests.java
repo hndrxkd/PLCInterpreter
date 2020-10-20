@@ -1,5 +1,6 @@
 package plc.interpreter;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -94,7 +95,7 @@ final class InterpreterTests {
 
     @ParameterizedTest
     @MethodSource
-    void testAnd(String test, Ast ast, BigDecimal expected) {
+    void testAnd(String test, Ast ast, Boolean expected) {
         test(ast, expected, Collections.emptyMap());
     }
 
@@ -102,13 +103,17 @@ final class InterpreterTests {
         return Stream.of(
                 Arguments.of("and true", new Ast.Term("and", Arrays.asList(
                         new Ast.Identifier("true")
-                )), true)
+                )), Boolean.TRUE),
+                Arguments.of("and true false", new Ast.Term("and", Arrays.asList(
+                        new Ast.Identifier("true"),
+                        new Ast.Identifier("false")
+                )), Boolean.FALSE)
         );
     }
 
     @ParameterizedTest
     @MethodSource
-    void testOr(String test, Ast ast, BigDecimal expected) {
+    void testOr(String test, Ast ast, Boolean expected) {
         test(ast, expected, Collections.emptyMap());
     }
 
@@ -119,6 +124,21 @@ final class InterpreterTests {
                 )), true)
         );
     }
+
+    @ParameterizedTest
+    @MethodSource
+    void testNot(String test, Ast ast, Boolean expected) {
+        test(ast, expected, Collections.emptyMap());
+    }
+
+    private static Stream<Arguments> testNot() {
+        return Stream.of(
+                Arguments.of("not true", new Ast.Term("not", Arrays.asList(
+                        new Ast.Identifier("true")
+                )), false)
+        );
+    }
+
     private static void test(Ast ast, Object expected, Map<String, Object> map) {
         Scope scope = new Scope(null);
         map.forEach(scope::define);
