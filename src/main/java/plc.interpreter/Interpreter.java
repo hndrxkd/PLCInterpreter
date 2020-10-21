@@ -164,9 +164,27 @@ public final class Interpreter {
             return false;
         });
         scope.define("not" , (Function<List<Ast> , Object>) args -> {
-            boolean value = requireType(Boolean.class , args.get(0));
-            return !value;
+            try {
+                boolean value = requireType(Boolean.class, eval(args.get(0)));
+                return !value;
+            }catch (Exception e) {
+                throw new EvalException(e.getMessage());
+            }
         });
+        scope.define("equals?" , (Function<List<Ast> , Object>) args -> {
+            try {
+                return eval(args.get(0)).equals(eval(args.get(1)));
+            }catch (Exception e) {
+                throw new EvalException(e.getMessage());
+            }
+        });
+        scope.define("list" , (Function<List<Ast> , Object>) args -> {
+           for(Ast arg : args) {
+               arg.getClass();
+                return args;
+           }
+        });
+
         scope.define("true" , Boolean.TRUE);
         scope.define("false" , Boolean.FALSE);
         

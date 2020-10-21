@@ -107,10 +107,10 @@ final class InterpreterTests {
                 Arguments.of("and true false", new Ast.Term("and", Arrays.asList(
                         new Ast.Identifier("true"),
                         new Ast.Identifier("false")
-                )), Boolean.FALSE)
+                )), false)
         );
     }
-
+//TODO: make sure that all the math functions evaluate the ast so that it is not only expecting ast.numberliterals
     @ParameterizedTest
     @MethodSource
     void testOr(String test, Ast ast, Boolean expected) {
@@ -135,7 +135,37 @@ final class InterpreterTests {
         return Stream.of(
                 Arguments.of("not true", new Ast.Term("not", Arrays.asList(
                         new Ast.Identifier("true")
-                )), false)
+                )), false),
+                Arguments.of("not 0", new Ast.Term("not", Arrays.asList(
+                        new Ast.Identifier("0")
+                )), null)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testEquals(String test, Ast ast, Boolean expected) {
+        test(ast, expected, Collections.emptyMap());
+    }
+
+    private static Stream<Arguments> testEquals() {
+        return Stream.of(
+                Arguments.of("10 == \"10\"", new Ast.Term("equals?", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.TEN),
+                        new Ast.StringLiteral("10")
+                )), false),
+                Arguments.of("10 == 10", new Ast.Term("equals?", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.TEN),
+                        new Ast.NumberLiteral(BigDecimal.TEN)
+                )), true),
+                Arguments.of("10 == ", new Ast.Term("equals?", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.TEN)
+                )), null),
+                Arguments.of("10 == print", new Ast.Term("equals?", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.TEN),
+                        new Ast.Term("print" , Arrays.asList(
+                                new Ast.StringLiteral("unreached")
+                        )))), false)
         );
     }
 

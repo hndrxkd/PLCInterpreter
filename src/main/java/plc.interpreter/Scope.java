@@ -2,7 +2,6 @@ package plc.interpreter;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public final class Scope {
 
@@ -13,8 +12,16 @@ public final class Scope {
         this.parent = parent;
     }
 
+    public Scope getParent() {
+        return parent;
+    }
+
     public void define(String name, Object value) {
-        map.put(name, value);
+        if (map.containsKey(name)) {
+            throw new EvalException("The identifier " + name + " is already defined in this scope.");
+        } else {
+            map.put(name, value);
+        }
     }
 
     public void set(String name, Object value) throws EvalException {
