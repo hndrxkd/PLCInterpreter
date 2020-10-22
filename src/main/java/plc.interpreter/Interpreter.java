@@ -3,6 +3,7 @@ package plc.interpreter;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -199,8 +200,11 @@ public final class Interpreter {
         });
         scope.define("range" , (Function<List<Ast> , Object>) args -> {
             try {
-                if (args.size() > 2)
+                if (args.size() > 2) {
                     throw new EvalException("too many arguments for range.");
+                }else if(args.isEmpty()){
+                    throw new EvalException("too little arguments for range");
+                }
                 LinkedList<BigDecimal> ll = new LinkedList<>();
 
                 BigDecimal first = requireType(BigDecimal.class, eval(args.get(0)));
@@ -222,17 +226,70 @@ public final class Interpreter {
         }
         });
         scope.define("define" , (Function<List<Ast> , Object>) args -> {
-            scope.define(requireType(Ast.Identifier.class , eval(args.get(0))).toString() , requireType(Ast.NumberLiteral.class , eval(args.get(1))).getValue());
+            scope.define(args.get(0).toString() , eval(args.get(1)));
+
+
 
             return VOID;
         });
         scope.define("set!" , (Function<List<Ast> , Object>) args -> {
-            scope.set(requireType(Ast.Identifier.class , eval(args.get(0))).toString() , requireType(Ast.NumberLiteral.class , eval(args.get(1))).getValue());
+            scope.set(args.get(0).toString() , eval(args.get(1)));
 
             return VOID;
         });
+        scope.define(">" , (Function<List<Ast> , Object>) args -> {
+            List<BigDecimal> list = new ArrayList<>();
+            for (Ast arg : args){
+                list.add(requireType(BigDecimal.class, eval(arg)));
+            }
+            for (int i = 0 ; i < args.size() - 1; i++){
+               if(list.get(i).compareTo(list.get(i+1)) <= 0){
+                   return false;
+               }
+            }
+            return true;
+        });
+        scope.define(">=" , (Function<List<Ast> , Object>) args -> {
+            List<BigDecimal> list = new ArrayList<>();
+            for (Ast arg : args){
+                list.add(requireType(BigDecimal.class, eval(arg)));
+            }
+            for (int i = 0 ; i < args.size() - 1; i++){
+                if(list.get(i).compareTo(list.get(i+1)) < 0){
+                    return false;
+                }
+            }
+            return true;
+        });
+        scope.define("<" , (Function<List<Ast> , Object>) args -> {
+            List<BigDecimal> list = new ArrayList<>();
+            for (Ast arg : args){
+                list.add(requireType(BigDecimal.class, eval(arg)));
+            }
+            for (int i = 0 ; i < args.size() - 1; i++){
+                if(list.get(i).compareTo(list.get(i+1)) >= 0){
+                    return false;
+                }
+            }
+            return true;
+        });
+        scope.define("<=" , (Function<List<Ast> , Object>) args -> {
+            List<BigDecimal> list = new ArrayList<>();
+            for (Ast arg : args){
+                list.add(requireType(BigDecimal.class, eval(arg)));
+            }
+            for (int i = 0 ; i < args.size() - 1; i++){
+                if(list.get(i).compareTo(list.get(i+1)) > 0){
+                    return false;
+                }
+            }
+            return true;
+        });
 
 
+        // remove me
+        scope.define("x" , BigDecimal.valueOf(18));
+        //remove me
         scope.define("true" , Boolean.TRUE);
         scope.define("false" , Boolean.FALSE);
         

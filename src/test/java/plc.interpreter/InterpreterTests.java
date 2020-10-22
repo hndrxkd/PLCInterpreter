@@ -171,7 +171,9 @@ final class InterpreterTests {
                 Arguments.of("Positive to negative", new Ast.Term("range", Arrays.asList(
                         new Ast.NumberLiteral(BigDecimal.ZERO),
                         new Ast.NumberLiteral(BigDecimal.valueOf(-3))
-                )), null)
+                )), null),
+                Arguments.of("No bounds", new Ast.Term("range", Arrays.asList()
+                ), null)
         );
     }
 
@@ -216,6 +218,104 @@ final class InterpreterTests {
                         new Ast.Term("print" , Arrays.asList(
                                 new Ast.StringLiteral("unreached")
                         )))), false)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testComparisons(String test, Ast ast, Boolean expected) {
+        test(ast, expected, Collections.emptyMap());
+    }
+
+    private static Stream<Arguments> testComparisons() {
+        return Stream.of(
+                Arguments.of(">", new Ast.Term(">", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.TEN),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(8)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(7)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(5))
+                )), true),
+                Arguments.of(">", new Ast.Term(">", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.TEN),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(8)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(7)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(7))
+                )), false),
+                Arguments.of(">=", new Ast.Term(">=", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.TEN),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(8)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(7)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(7)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(5))
+                )), true),
+                Arguments.of("<", new Ast.Term("<", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.TEN),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(18)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(17)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(7))
+                )), false),
+                Arguments.of("<", new Ast.Term("<", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.TEN),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(18)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(19)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(19))
+                )), false),
+                Arguments.of("<", new Ast.Term("<", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.TEN),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(18)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(19))
+                )), true),
+                Arguments.of("<=", new Ast.Term("<=", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.TEN),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(18)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(19)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(19)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(20))
+                )), true),
+                Arguments.of("<", new Ast.Term("<", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.TEN),
+                        new Ast.StringLiteral("test"),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(19)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(19))
+                )), null),
+                Arguments.of("<", new Ast.Term("<=", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.TEN),
+                        new Ast.Identifier("x"),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(19)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(19))
+                )), true)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testDefine(String test, Ast ast, Void expected) {
+        test(ast, expected, Collections.emptyMap());
+    }
+
+    private static Stream<Arguments> testDefine() {
+        return Stream.of(
+                Arguments.of("Define x = 10", new Ast.Term("define", Arrays.asList(
+                        new Ast.Identifier("x"),
+                        new Ast.NumberLiteral(BigDecimal.TEN)
+                )), null)
+
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testSet(String test, Ast ast, Void expected) {
+        test(ast, expected, Collections.emptyMap());
+    }
+
+    private static Stream<Arguments> testSet() {
+        return Stream.of(
+                Arguments.of("Set x = 10", new Ast.Term("set!", Arrays.asList(
+                        new Ast.Identifier("x"),
+                        new Ast.NumberLiteral(BigDecimal.TEN)
+                )), null)
+
         );
     }
 
