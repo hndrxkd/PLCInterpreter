@@ -199,10 +199,18 @@ public final class Interpreter {
         });
         scope.define("range" , (Function<List<Ast> , Object>) args -> {
             try {
+                if (args.size() > 2)
+                    throw new EvalException("too many arguments for range.");
                 LinkedList<BigDecimal> ll = new LinkedList<>();
 
                 BigDecimal first = requireType(BigDecimal.class, eval(args.get(0)));
                 BigDecimal second = requireType(BigDecimal.class, eval(args.get(1)));
+
+                if(first.scale() > 0 | second.scale() > 0 ){
+                    throw new EvalException("received a decimal, was expecting integer value for bounds.");
+                }else if (second.compareTo(first)  == -1){
+                    throw new EvalException("second bound is smaller than first.");
+                }
 
                 for (int i = first.intValue(); i < second.intValue(); i++) {
                     ll.add(BigDecimal.valueOf(i));

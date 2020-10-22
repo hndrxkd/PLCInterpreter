@@ -155,10 +155,23 @@ final class InterpreterTests {
                         new Ast.NumberLiteral(BigDecimal.ZERO),
                         new Ast.NumberLiteral(BigDecimal.valueOf(3))
                 )), new LinkedList<>(Arrays.asList(0,1,2))),
-                Arguments.of("0 - 3", new Ast.Term("range", Arrays.asList(
+                Arguments.of("1 to 1", new Ast.Term("range", Arrays.asList(
                         new Ast.NumberLiteral(BigDecimal.ONE),
                         new Ast.NumberLiteral(BigDecimal.ONE)
-                )), new LinkedList<>())
+                )), new LinkedList<>()),
+                Arguments.of("Too many Arguments", new Ast.Term("range", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.ZERO),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(3)),
+                        new Ast.NumberLiteral(BigDecimal.TEN)
+                )), null),
+                Arguments.of("Decimal values", new Ast.Term("range", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.valueOf(1.5)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(3))
+                )), null),
+                Arguments.of("Positive to negative", new Ast.Term("range", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.ZERO),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(-3))
+                )), null)
         );
     }
 
