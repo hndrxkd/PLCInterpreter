@@ -285,6 +285,37 @@ public final class Interpreter {
             }
             return true;
         });
+        scope.define("do" , (Function<List<Ast> , Object>) args -> {
+           this.scope = new Scope(scope);
+           Object result = null;
+
+           for (Ast arg : args) {
+               result = eval(arg);
+           }
+
+           this.scope = this.scope.getParent();
+
+           if(result == null)
+               return VOID;
+
+           return result;
+
+        });
+        scope.define("while" , (Function<List<Ast> , Object>) args -> {
+            this.scope = new Scope(scope);
+//            Object result = null;
+
+            while(requireType(Boolean.class , eval(args.get(0))) == Boolean.TRUE) {
+                for (Ast arg : args.subList(1, args.size())) {
+                    eval(arg);
+                }
+            }
+
+            this.scope = this.scope.getParent();
+
+            return VOID;
+
+        });
 
 
         // remove me

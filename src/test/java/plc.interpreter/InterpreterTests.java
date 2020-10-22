@@ -7,6 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import sun.awt.image.ImageWatched;
+import sun.nio.cs.ext.Big5_HKSCS;
 
 import java.io.PrintWriter;
 import java.math.BigDecimal;
@@ -316,6 +317,49 @@ final class InterpreterTests {
                         new Ast.NumberLiteral(BigDecimal.TEN)
                 )), null)
 
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testDo(String test, Ast ast, Object expected) {
+        test(ast, expected, Collections.emptyMap());
+    }
+
+    private static Stream<Arguments> testDo() {
+        return Stream.of(
+                Arguments.of("do", new Ast.Term("do", Arrays.asList(
+                        new Ast.Term("define", Arrays.asList(
+                                new Ast.Identifier("x"),
+                                new Ast.NumberLiteral(BigDecimal.valueOf(20))
+                        )),
+                        new Ast.Identifier("x")
+                )), BigDecimal.valueOf(20)),
+                Arguments.of("do", new Ast.Term("do", Arrays.asList()), null)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testWhile(String test, Ast ast, Object expected) {
+        test(ast, expected, Collections.emptyMap());
+    }
+
+    private static Stream<Arguments> testWhile() {
+        return Stream.of(
+                Arguments.of("while", new Ast.Term("while", Arrays.asList(
+                        new Ast.Term("<=", Arrays.asList(
+                                new Ast.Identifier("x"),
+                                new Ast.NumberLiteral(BigDecimal.valueOf(20))
+                        )),
+                        new Ast.Term("set!" , Arrays.asList(
+                          new Ast.Identifier("x"),
+                          new Ast.Term("+" , Arrays.asList(
+                                  new Ast.Identifier("x"),
+                                  new Ast.NumberLiteral(BigDecimal.valueOf(1))
+                          ))
+                        ))
+                )), null)
         );
     }
 
