@@ -6,11 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import sun.awt.image.ImageWatched;
 
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -122,6 +124,41 @@ final class InterpreterTests {
                 Arguments.of("and true", new Ast.Term("or", Arrays.asList(
                         new Ast.Identifier("true")
                 )), true)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testList(String test, Ast ast, LinkedList expected) {
+        test(ast, expected, Collections.emptyMap());
+    }
+
+    private static Stream<Arguments> testList() {
+        return Stream.of(
+                Arguments.of("list", new Ast.Term("list", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.ONE),
+                        new Ast.StringLiteral("BigDecimal.valueOf(2)"),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(3))
+                )), new LinkedList<>(Arrays.asList(1,2,3)))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testRange(String test, Ast ast, LinkedList<BigDecimal> expected) {
+        test(ast, expected, Collections.emptyMap());
+    }
+
+    private static Stream<Arguments> testRange() {
+        return Stream.of(
+                Arguments.of("0 - 3", new Ast.Term("range", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.ZERO),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(3))
+                )), new LinkedList<>(Arrays.asList(0,1,2))),
+                Arguments.of("0 - 3", new Ast.Term("range", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.ONE),
+                        new Ast.NumberLiteral(BigDecimal.ONE)
+                )), new LinkedList<>())
         );
     }
 

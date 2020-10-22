@@ -3,7 +3,9 @@ package plc.interpreter;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -148,12 +150,16 @@ public final class Interpreter {
             }
         });
         scope.define("and" , (Function<List<Ast> , Object>) args -> {
-            for(Ast arg : args ) {
-                if (!requireType(Boolean.class, eval(arg))) {
-                    return false;
+            try{
+                for(Ast arg : args ) {
+                    if (!requireType(Boolean.class, eval(arg))) {
+                        return false;
                 }
             }
-            return true;
+                return true;
+            }catch (Exception e) {
+                throw new EvalException(e.getMessage());
+            }
         });
         scope.define("or" , (Function<List<Ast> , Object>) args -> {
             for(Ast arg : args ) {
@@ -173,17 +179,51 @@ public final class Interpreter {
         });
         scope.define("equals?" , (Function<List<Ast> , Object>) args -> {
             try {
-                return eval(args.get(0)).equals(eval(args.get(1)));
+                return Objects.deepEquals(eval(args.get(0)), eval(args.get(1)));
             }catch (Exception e) {
                 throw new EvalException(e.getMessage());
             }
         });
         scope.define("list" , (Function<List<Ast> , Object>) args -> {
-           for(Ast arg : args) {
-               arg.getClass();
-                return args;
-           }
+            try {
+                LinkedList<Object> ll = new LinkedList<>();
+
+                for (Ast arg : args) {
+                    ll.add(eval(arg));
+                }
+
+                return ll;
+            } catch (Exception e) {
+            throw new EvalException(e.getMessage());
+        }
         });
+        scope.define("range" , (Function<List<Ast> , Object>) args -> {
+            try {
+                LinkedList<BigDecimal> ll = new LinkedList<>();
+
+                BigDecimal first = requireType(BigDecimal.class, eval(args.get(0)));
+                BigDecimal second = requireType(BigDecimal.class, eval(args.get(1)));
+
+                for (int i = first.intValue(); i < second.intValue(); i++) {
+                    ll.add(BigDecimal.valueOf(i));
+                }
+
+                return ll;
+            }catch (Exception e) {
+            throw new EvalException(e.getMessage());
+        }
+        });
+        scope.define("define" , (Function<List<Ast> , Object>) args -> {
+            scope.define(requireType(Ast.Identifier.class , eval(args.get(0))).toString() , requireType(Ast.NumberLiteral.class , eval(args.get(1))).getValue());
+
+            return VOID;
+        });
+        scope.define("set!" , (Function<List<Ast> , Object>) args -> {
+            scope.set(requireType(Ast.Identifier.class , eval(args.get(0))).toString() , requireType(Ast.NumberLiteral.class , eval(args.get(1))).getValue());
+
+            return VOID;
+        });
+
 
         scope.define("true" , Boolean.TRUE);
         scope.define("false" , Boolean.FALSE);
