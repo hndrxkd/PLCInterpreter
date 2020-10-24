@@ -227,13 +227,22 @@ public final class Interpreter {
         }
         });
         scope.define("define" , (Function<List<Ast> , Object>) args -> {
-            if(args.size() == 2) {
-                this.scope.define(args.get(0).toString(), eval(args.get(1)));
+            try {
+                if (args.size() == 2 && args.get(0) instanceof Ast.Identifier) {
+                    String ident = ((Ast.Identifier) args.get(0)).getName();
+                    this.scope.define(ident, eval(args.get(1)));
+                    return VOID;
+                } else if (args.isEmpty()) {
+                    throw new EvalException("Expected 2 or more arguments");
+                }
+
+                throw new EvalException("Invalid arguments");
+
+
             }
-
-
-
-            return VOID;
+            catch (Exception e){
+                throw new EvalException(e.getMessage());
+            }
         });
         scope.define("set!" , (Function<List<Ast> , Object>) args -> {
             if(args.size() == 2) {
@@ -245,7 +254,8 @@ public final class Interpreter {
             return VOID;
         });
         scope.define(">" , (Function<List<Ast> , Object>) args -> {
-            List<BigDecimal> list = new ArrayList<>();
+            try {
+            List<Comparable> list = new ArrayList<>();
             for (Ast arg : args){
                 list.add(requireType(BigDecimal.class, eval(arg)));
             }
@@ -255,9 +265,14 @@ public final class Interpreter {
                }
             }
             return true;
+            }catch (Exception e) {
+                throw new EvalException(e.getMessage());
+            }
+
         });
         scope.define(">=" , (Function<List<Ast> , Object>) args -> {
-            List<BigDecimal> list = new ArrayList<>();
+            try {
+            List<Comparable> list = new ArrayList<>();
             for (Ast arg : args){
                 list.add(requireType(BigDecimal.class, eval(arg)));
             }
@@ -267,9 +282,14 @@ public final class Interpreter {
                 }
             }
             return true;
+        }catch (Exception e) {
+            throw new EvalException(e.getMessage());
+        }
+
         });
         scope.define("<" , (Function<List<Ast> , Object>) args -> {
-            List<BigDecimal> list = new ArrayList<>();
+            try {
+            List<Comparable> list = new ArrayList<>();
             for (Ast arg : args){
                 list.add(requireType(BigDecimal.class, eval(arg)));
             }
@@ -279,33 +299,45 @@ public final class Interpreter {
                 }
             }
             return true;
+        }catch (Exception e) {
+            throw new EvalException(e.getMessage());
+        }
         });
         scope.define("<=" , (Function<List<Ast> , Object>) args -> {
-            List<BigDecimal> list = new ArrayList<>();
-            for (Ast arg : args){
-                list.add(requireType(BigDecimal.class, eval(arg)));
-            }
-            for (int i = 0 ; i < args.size() - 1; i++){
-                if(list.get(i).compareTo(list.get(i+1)) > 0){
-                    return false;
+            try {
+                List<Comparable> list = new ArrayList<>();
+                for (Ast arg : args) {
+                    list.add(requireType(Comparable.class, eval(arg)));
                 }
+                for (int i = 0; i < args.size() - 1; i++) {
+                    if (list.get(i).compareTo(list.get(i + 1)) > 0) {
+                        return false;
+                    }
+                }
+                return true;
+            }catch (Exception e) {
+                throw new EvalException(e.getMessage());
             }
-            return true;
         });
         scope.define("do" , (Function<List<Ast> , Object>) args -> {
-           this.scope = new Scope(scope);
-           Object result = null;
+           try {
 
-           for (Ast arg : args) {
-               result = eval(arg);
+               this.scope = new Scope(scope);
+               Object result = null;
+
+               for (Ast arg : args) {
+                   result = eval(arg);
+               }
+
+               this.scope = this.scope.getParent();
+
+               if (result == null)
+                   return VOID;
+
+               return result;
+           }catch (Exception e) {
+               throw new EvalException(e.getMessage());
            }
-
-           this.scope = this.scope.getParent();
-
-           if(result == null)
-               return VOID;
-
-           return result;
 
         });
         scope.define("while" , (Function<List<Ast> , Object>) args -> {
