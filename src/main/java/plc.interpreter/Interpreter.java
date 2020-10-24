@@ -356,28 +356,29 @@ public final class Interpreter {
 
         });
         scope.define("for" , (Function<List<Ast>, Object>) args -> {
-            this.scope = new Scope(scope);
-
-            String variable = requireType(Ast.Term.class,args.get(0)).getName();
-            Object test = eval(requireType(Ast.Term.class,args.get(0)).getArgs().get(0));
+//            this.scope = new Scope(scope);
+            try {
+                String variable = requireType(Ast.Term.class, args.get(0)).getName();
+                Object test = eval(requireType(Ast.Term.class, args.get(0)).getArgs().get(0));
 
 //            Object ll = eval(requireType(Ast.Term.class, eval(args.get(0))).getArgs().get(0));
+                this.scope.define("ll", requireType(LinkedList.class, test));
+                this.scope.define(variable, requireType(LinkedList.class, test).get(0));
 
-            this.scope.define("ll" , requireType(LinkedList.class ,test));
-            this.scope.define(variable , requireType(LinkedList.class ,test).get(0));
+
+                for (Object dec : requireType(LinkedList.class, test)) {
+                    this.scope.set(variable, dec);
+                    for (Ast arg : args.subList(1, args.size())) {
+                        eval(arg);
+                    }
+
+                }
 
 
-            for (Object dec : requireType(LinkedList.class ,test)){
-                this.scope.set(variable ,dec);
-                for(Ast arg : args.subList(1,args.size()) ) {
-                   eval(arg);
-               }
-
+                return VOID;
+            }catch (Exception e) {
+                throw new EvalException(e.getMessage());
             }
-
-            this.scope = this.scope.getParent();
-
-            return VOID;
 
 
 
