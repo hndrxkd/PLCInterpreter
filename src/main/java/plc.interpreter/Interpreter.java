@@ -226,14 +226,20 @@ public final class Interpreter {
         }
         });
         scope.define("define" , (Function<List<Ast> , Object>) args -> {
-            scope.define(args.get(0).toString() , eval(args.get(1)));
+            if(args.size() == 2) {
+                this.scope.define(args.get(0).toString(), eval(args.get(1)));
+            }
 
 
 
             return VOID;
         });
         scope.define("set!" , (Function<List<Ast> , Object>) args -> {
-            scope.set(args.get(0).toString() , eval(args.get(1)));
+            if(args.size() == 2) {
+                this.scope.set(args.get(0).toString(), eval(args.get(1)));
+            }else {
+                throw new EvalException("Was expecting two arguments, got " + args.size());
+            }
 
             return VOID;
         });
@@ -316,11 +322,39 @@ public final class Interpreter {
             return VOID;
 
         });
+        scope.define("for" , (Function<List<Ast>, Object>) args -> {
+            this.scope = new Scope(scope);
+
+            String variable = requireType(Ast.Term.class,args.get(0)).getName();
+            Object test = eval(requireType(Ast.Term.class,args.get(0)).getArgs().get(0));
+
+//            Object ll = eval(requireType(Ast.Term.class, eval(args.get(0))).getArgs().get(0));
+
+            this.scope.define("ll" , requireType(LinkedList.class ,test));
+            this.scope.define(variable , requireType(LinkedList.class ,test).get(0));
 
 
-        // remove me
-        scope.define("x" , BigDecimal.valueOf(18));
-        //remove me
+            for (Object dec : requireType(LinkedList.class ,test)){
+                this.scope.set(variable ,dec);
+                for(Ast arg : args.subList(1,args.size()) ) {
+                   eval(arg);
+               }
+
+            }
+
+            this.scope = this.scope.getParent();
+
+            return VOID;
+
+
+
+
+        });
+
+
+//        // remove me
+//        scope.define("x" , BigDecimal.valueOf(18));
+//        //remove me
         scope.define("true" , Boolean.TRUE);
         scope.define("false" , Boolean.FALSE);
         

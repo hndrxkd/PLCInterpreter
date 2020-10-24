@@ -359,7 +359,29 @@ final class InterpreterTests {
                                   new Ast.NumberLiteral(BigDecimal.valueOf(1))
                           ))
                         ))
-                )), null)
+                )), Interpreter.VOID)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testFor(String test, Ast ast, Object expected) {
+        test(ast, expected, Collections.emptyMap());
+    }
+
+    private static Stream<Arguments> testFor() {
+        return Stream.of(
+                Arguments.of("for", new Ast.Term("for", Arrays.asList(
+                        new Ast.Term("i", Arrays.asList(
+                                new Ast.Term("range", Arrays.asList(
+                                        new Ast.NumberLiteral(BigDecimal.ZERO),
+                                        new Ast.NumberLiteral(BigDecimal.TEN)
+                                ))
+                        )),
+                        new Ast.Term("print" , Arrays.asList(
+                                new Ast.Identifier("i")
+                        ))
+                )), Interpreter.VOID)
         );
     }
 
