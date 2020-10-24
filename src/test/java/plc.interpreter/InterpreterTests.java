@@ -138,9 +138,33 @@ final class InterpreterTests {
         return Stream.of(
                 Arguments.of("list", new Ast.Term("list", Arrays.asList(
                         new Ast.NumberLiteral(BigDecimal.ONE),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(2)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(3))
+                )), new LinkedList<Object>(Arrays.asList(1,2,3))),
+                Arguments.of("list", new Ast.Term("list", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.ONE),
                         new Ast.StringLiteral("BigDecimal.valueOf(2)"),
                         new Ast.NumberLiteral(BigDecimal.valueOf(3))
-                )), new LinkedList<>(Arrays.asList(1,2,3)))
+                )), null)
+        );
+    }
+
+    @Test
+    void testLists() {
+        Scope scope = new Scope(null);
+        Interpreter interpreter = new Interpreter(new PrintWriter(System.out, true), scope);
+        Object result = interpreter.eval(new Ast.Term("list", Arrays.asList(
+                new Ast.NumberLiteral(BigDecimal.ONE),
+                new Ast.NumberLiteral(BigDecimal.valueOf(2)),
+                new Ast.NumberLiteral(BigDecimal.valueOf(3))
+        )));
+        LinkedList<Object> exp = new LinkedList<>();
+        exp.add(BigDecimal.ONE);
+        exp.add(BigDecimal.valueOf(2));
+        exp.add(BigDecimal.valueOf(3));
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(exp, result),
+                () -> Assertions.assertEquals(new LinkedList<Object>(Arrays.asList(BigDecimal.ONE,BigDecimal.valueOf(2),BigDecimal.valueOf(3))) , result)
         );
     }
 

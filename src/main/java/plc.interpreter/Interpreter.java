@@ -190,7 +190,8 @@ public final class Interpreter {
                 LinkedList<Object> ll = new LinkedList<>();
 
                 for (Ast arg : args) {
-                    ll.add(eval(arg));
+                    Object next = ll.isEmpty() ?  eval(arg) : requireType(eval(args.get(0)).getClass() , eval(arg));
+                    ll.add(next);
                 }
 
                 return ll;
