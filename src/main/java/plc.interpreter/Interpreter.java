@@ -386,9 +386,6 @@ public final class Interpreter {
         });
 
 
-//        // remove me
-//        scope.define("x" , BigDecimal.valueOf(18));
-//        //remove me
         scope.define("true" , Boolean.TRUE);
         scope.define("false" , Boolean.FALSE);
         

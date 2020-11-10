@@ -41,13 +41,16 @@ public final class Lexer {
      */
     List<Token> lex() throws ParseException {
         List<Token> tokens = new ArrayList<>();
+        int v = 0x0B;
+        char vEscape = (char) v;
 
         while(chars.has(0)){
-            if(peek(" ") | peek("[\\n\\r\\t]")){
+            while(peek(" ") | peek("[\\\f\\\b\\\n\\\r\\\t]") | peek( String.valueOf(vEscape))){
                 chars.advance();
                 chars.reset();
             }
-            tokens.add(lexToken());
+            if(chars.has(0))
+                tokens.add(lexToken());
 
         }
 
@@ -96,18 +99,32 @@ public final class Lexer {
      */
     Token lexToken() throws ParseException {
 
-        if (match("[0-9]") | peek("[\\+-]","[0-9]")){
+        if (peek("[0-9]") | peek("[\\+-]","[0-9]")){
             return lexNumber();
-        }else if(match("[a-zA-Z\\*\\?:!/<>_\\\\=\\+-]") | (match("\\.", "[a-zA-Z\\\\*\\\\?:!/<>_\\\\\\\\=\\\\+-]"))) {
+        }else if(peek("[a-zA-Z\\*\\?:!/<>_\\\\=\\+-]") | (peek("\\.", "[0-9a-zA-Z\\\\*\\\\?:!/<>_\\\\\\\\=\\\\+-]"))) {
             return lexIdentifier();
-        }else if (match("\"")){
+        }else if (peek("\"")){
             return lexString();
-        }else if(match("[(#)\\[\\]]") | match("\\."," " )) {
-            return chars.emit(Token.Type.OPERATOR);
+        }else  if(peek("\\."," " ) | peek("[@(#)\\[\\]\\'\\.]")){
+            if(match("[..]") | match("[@(#)\\[\\]\\'\\.]"))
+                return chars.emit(Token.Type.OPERATOR);
         }
+        throw new ParseException(" couldnt parse", chars.index); //TODO
 
 
-       throw new ParseException(" couldnt parse", chars.index); //TODO
+
+//        if (match("[0-9]") | peek("[\\+-]","[0-9]")){
+//            return lexNumber();
+//        }else if(match("[a-zA-Z\\*\\?:!/<>_\\\\=\\+-]") | (match("\\.", "[a-zA-Z\\\\*\\\\?:!/<>_\\\\\\\\=\\\\+-]"))) {
+//            return lexIdentifier();
+//        }else if (match("\"")){
+//            return lexString();
+//        }else if(match("[(#)\\[\\]]") | match("\\."," " )) {
+//            return chars.emit(Token.Type.OPERATOR);
+//        }
+//
+//
+//       throw new ParseException(" couldnt parse", chars.index); //TODO
     }
 
     Token lexIdentifier() {
@@ -128,15 +145,17 @@ public final class Lexer {
     }
 
     Token lexString() throws ParseException {
-        while(chars.has(0)){
-            if(peek("\\\\")){
-                if(!match("\\\\","[bnrt\'\"\\\\]")){
-                    throw new ParseException("could not parse", chars.index);
+        if(match("\"")) {
+            while (chars.has(0)) {
+                if (peek("\\\\")) {
+                    if (!match("\\\\", "[bnrt\'\"\\\\]")) {
+                        throw new ParseException("could not parse", chars.index);
+                    }
+                } else if (match("\"")) {
+                    return chars.emit(Token.Type.STRING);
+                } else if (peek(".")) {
+                    match(".");
                 }
-            }else if(match("\"")){
-                return chars.emit(Token.Type.STRING);
-            }else if(peek(".")){
-                match(".");
             }
         }
         throw new ParseException("could not parse", chars.index); //TODO
@@ -246,10 +265,9 @@ public final class Lexer {
          * <em>starting</em> index.
          */
         Token emit(Token.Type type) {
-            String text = input.substring(index - length , index);
-            Token token = new Token(type, text , index - length);
-            reset();
-            return token;
+            int start = index - length;
+            reset(); //
+            return new Token(type, input.substring(start, index), start);
             //TODO
         }
 

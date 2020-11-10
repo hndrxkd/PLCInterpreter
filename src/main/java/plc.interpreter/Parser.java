@@ -97,6 +97,7 @@ public final class Parser {
             } else if (peek("(") | peek("[")) {
                 return parseTerm();
             }
+            throw new ParseException("Closing parenthesis before opening" , tokens.index );
         }
 
         throw new ParseException("Closing parenthesis before opening" , tokens.index );
@@ -108,7 +109,11 @@ public final class Parser {
         List<Ast> args = new ArrayList<>();
         String term;
 
+        String wrongClosing;
+        String operator = tokens.get(0).getLiteral();
         if(match(Token.Type.OPERATOR)) {
+            operator = operator.compareTo("(") == 0 ? ")" : "]";
+            wrongClosing = operator.compareTo(")") == 0 ? "]" : ")";
             if(peek(")") | peek("]")){
                 throw new ParseException("Was expecting identifier, got function end" , tokens.index);
             }
@@ -119,7 +124,10 @@ public final class Parser {
 
             tokens.advance();
 
-            while(!match(")") && !match("]")) {
+            while(!match(operator) ) {
+                if(peek(wrongClosing)){
+                    throw new ParseException("Expected " + operator + "as closing operator, got " + wrongClosing , tokens.index);
+                }
                 args.add(parseAst());
             }
             return new Ast.Term(term , args );
@@ -153,11 +161,16 @@ public final class Parser {
 
     private Ast parseStringLiteral() {
 
+        //this may still need work - october 27th
+
         String text = tokens.get(0).getLiteral();
+        text = text.replaceAll("\\\\\"" , "\"");
         text = text.replaceAll("\"", "");
         text = text.replaceAll("\\\\n", "\n" );
         text = text.replaceAll("\\\\r", "\r" );
         text = text.replaceAll("\\\\t", "\t" );
+        text = text.replaceAll("\\\\b" , "\b");
+        text.replaceAll("\\\\'" , "\'");
 
         Ast string = new Ast.StringLiteral(text);
         tokens.advance();
@@ -176,19 +189,22 @@ public final class Parser {
      * {@code peek(Token.Type.IDENTIFIER)} and {@code peek("literal")}.
      */
     private boolean peek(Object... patterns) {
-        int index = 0;
-        for (int i = 0 ; i < patterns.length ; i++) {
+        try {
+            int index = 0;
+            for (int i = 0; i < patterns.length; i++) {
 //            if(patterns[i] instanceof Token.Type){
-            if (patterns[i] == tokens.get(index).getType()) {
+                if (patterns[i] == tokens.get(index).getType()) {
                     index++;
+                } else if (patterns[i].toString().equals(tokens.get(index).getLiteral())) {
+                    index++;
+                } else {
+                    return false;
+                }
             }
-            else if (patterns[i].toString().equals(tokens.get(index).getLiteral())) {
-                index++;
-            } else {
-                return false;
-            }
+            return true;
+        }catch (Exception e){
+            throw new ParseException(e.getMessage(), tokens.index);
         }
-        return true;
     }
 
     /**
@@ -196,17 +212,21 @@ public final class Parser {
      * and advances the token stream.
      */
     private boolean match(Object... patterns) {
-        int index = tokens.index;
+        try {
+            int index = tokens.index;
 
-        for(Object type: patterns) {
-            if(tokens.has(0) && peek(type)) {
-                tokens.advance();
-            }else{
-                tokens.index = index;
-                return false;
+            for (Object type : patterns) {
+                if (tokens.has(0) && peek(type)) {
+                    tokens.advance();
+                } else {
+                    tokens.index = index;
+                    return false;
+                }
             }
+            return true;
+        }catch (Exception e) {
+            throw new ParseException(e.getMessage(), tokens.index);
         }
-        return true;
 
     }
 

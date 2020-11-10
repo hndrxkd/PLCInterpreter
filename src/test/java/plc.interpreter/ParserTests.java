@@ -62,8 +62,10 @@ final class ParserTests {
                                 new Ast.Term("f", Arrays.asList(new Ast.Identifier("x")))
                         ))
                 )),
-                Arguments.of("Missing Identifier", "()", null)
-        );
+                Arguments.of("Missing Identifier", "()", null),
+                Arguments.of("Mixed seperators 1", "(print x]", null),
+                Arguments.of("Mixed seperators 2", "[print (f x))", null)
+                );
     }
 
     @ParameterizedTest
@@ -127,6 +129,9 @@ final class ParserTests {
                 )),
                 Arguments.of("Escape", "(print \"new\\rline\")", Arrays.asList(
                         new Ast.Term("print", Arrays.asList(new Ast.StringLiteral("new\rline")))
+                )),
+                Arguments.of("Escape", "(print \"\\b\\n\\r\\t\\\'\\\"\\\\\")", Arrays.asList(
+                        new Ast.Term("print", Arrays.asList(new Ast.StringLiteral("\\\"␈␊␍␉\\'\\\"\\\\\\\"")))
                 ))
         );
     }
@@ -134,6 +139,16 @@ final class ParserTests {
     @Test
     void testInvalidCharacter() {
         test("(print $)", null);
+    }
+
+    @Test
+    void testInvalidParen() {
+        test(")invalid(", null);
+    }
+
+    @Test
+    void testE() {
+        test("(", null);
     }
 
     @Test
