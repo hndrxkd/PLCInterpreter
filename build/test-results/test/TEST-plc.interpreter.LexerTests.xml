@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="plc.interpreter.LexerTests" tests="56" skipped="0" failures="3" errors="0" timestamp="2020-11-10T02:57:46" hostname="iMac.local" time="0.228">
+<testsuite name="plc.interpreter.LexerTests" tests="56" skipped="0" failures="3" errors="0" timestamp="2020-11-13T17:32:48" hostname="iMac.local" time="0.117">
   <properties/>
-  <testcase name="testPointFree()" classname="plc.interpreter.LexerTests" time="0.019"/>
-  <testcase name="testExample1()" classname="plc.interpreter.LexerTests" time="0.002"/>
+  <testcase name="testPointFree()" classname="plc.interpreter.LexerTests" time="0.015"/>
+  <testcase name="testExample1()" classname="plc.interpreter.LexerTests" time="0.001"/>
   <testcase name="testExample2()" classname="plc.interpreter.LexerTests" time="0.001"/>
   <testcase name="testExample3()" classname="plc.interpreter.LexerTests" time="0.002"/>
   <testcase name="testExample4()" classname="plc.interpreter.LexerTests" time="0.001"/>
-  <testcase name="[1] Single Char Input, Single Char Pattern, a, [a], true" classname="plc.interpreter.LexerTests" time="0.018"/>
+  <testcase name="[1] Single Char Input, Single Char Pattern, a, [a], true" classname="plc.interpreter.LexerTests" time="0.013"/>
+  <testcase name="[2] Multiple Char Input, Single Char Pattern, abc, [a], true" classname="plc.interpreter.LexerTests" time="0.0"/>
+  <testcase name="[3] Single Char Input, Multiple Char Pattern, a, [a, b, c], false" classname="plc.interpreter.LexerTests" time="0.001"/>
+  <testcase name="[4] Multiple Char Input, Multiple Char Pattern, abc, [a], true" classname="plc.interpreter.LexerTests" time="0.0"/>
+  <testcase name="[5] Single Char Input, Char Class Pattern Success, a, [[a-z]], true" classname="plc.interpreter.LexerTests" time="0.001"/>
+  <testcase name="[6] Single Char Input, Char Class Pattern Failure, @, [[a-z]], false" classname="plc.interpreter.LexerTests" time="0.001"/>
+  <testcase name="[7] Multiple Char Input, Mixed Pattern Success, cat, [c, [aeiou], t], true" classname="plc.interpreter.LexerTests" time="0.0"/>
+  <testcase name="[8] Multiple Char Input, Mixed Pattern Failure 1, cyt, [c, [aeiou], t], false" classname="plc.interpreter.LexerTests" time="0.001"/>
+  <testcase name="[9] Multiple Char Input, Mixed Pattern Failure 2, cow, [c, [aeiou], t], false" classname="plc.interpreter.LexerTests" time="0.001"/>
+  <testcase name="[10] End of Input, eo, [e, o, [fi]], false" classname="plc.interpreter.LexerTests" time="0.0"/>
+  <testcase name="[1] Single Char Input, Single Char Pattern, a, [a], true" classname="plc.interpreter.LexerTests" time="0.0"/>
   <testcase name="[2] Multiple Char Input, Single Char Pattern, abc, [a], true" classname="plc.interpreter.LexerTests" time="0.001"/>
   <testcase name="[3] Single Char Input, Multiple Char Pattern, a, [a, b, c], false" classname="plc.interpreter.LexerTests" time="0.001"/>
   <testcase name="[4] Multiple Char Input, Multiple Char Pattern, abc, [a], true" classname="plc.interpreter.LexerTests" time="0.001"/>
   <testcase name="[5] Single Char Input, Char Class Pattern Success, a, [[a-z]], true" classname="plc.interpreter.LexerTests" time="0.0"/>
   <testcase name="[6] Single Char Input, Char Class Pattern Failure, @, [[a-z]], false" classname="plc.interpreter.LexerTests" time="0.0"/>
-  <testcase name="[7] Multiple Char Input, Mixed Pattern Success, cat, [c, [aeiou], t], true" classname="plc.interpreter.LexerTests" time="0.001"/>
+  <testcase name="[7] Multiple Char Input, Mixed Pattern Success, cat, [c, [aeiou], t], true" classname="plc.interpreter.LexerTests" time="0.0"/>
   <testcase name="[8] Multiple Char Input, Mixed Pattern Failure 1, cyt, [c, [aeiou], t], false" classname="plc.interpreter.LexerTests" time="0.0"/>
-  <testcase name="[9] Multiple Char Input, Mixed Pattern Failure 2, cow, [c, [aeiou], t], false" classname="plc.interpreter.LexerTests" time="0.0"/>
+  <testcase name="[9] Multiple Char Input, Mixed Pattern Failure 2, cow, [c, [aeiou], t], false" classname="plc.interpreter.LexerTests" time="0.002"/>
   <testcase name="[10] End of Input, eo, [e, o, [fi]], false" classname="plc.interpreter.LexerTests" time="0.001"/>
-  <testcase name="[1] Single Char Input, Single Char Pattern, a, [a], true" classname="plc.interpreter.LexerTests" time="0.001"/>
-  <testcase name="[2] Multiple Char Input, Single Char Pattern, abc, [a], true" classname="plc.interpreter.LexerTests" time="0.001"/>
-  <testcase name="[3] Single Char Input, Multiple Char Pattern, a, [a, b, c], false" classname="plc.interpreter.LexerTests" time="0.001"/>
-  <testcase name="[4] Multiple Char Input, Multiple Char Pattern, abc, [a], true" classname="plc.interpreter.LexerTests" time="0.002"/>
-  <testcase name="[5] Single Char Input, Char Class Pattern Success, a, [[a-z]], true" classname="plc.interpreter.LexerTests" time="0.002"/>
-  <testcase name="[6] Single Char Input, Char Class Pattern Failure, @, [[a-z]], false" classname="plc.interpreter.LexerTests" time="0.001"/>
-  <testcase name="[7] Multiple Char Input, Mixed Pattern Success, cat, [c, [aeiou], t], true" classname="plc.interpreter.LexerTests" time="0.001"/>
-  <testcase name="[8] Multiple Char Input, Mixed Pattern Failure 1, cyt, [c, [aeiou], t], false" classname="plc.interpreter.LexerTests" time="0.001"/>
-  <testcase name="[9] Multiple Char Input, Mixed Pattern Failure 2, cow, [c, [aeiou], t], false" classname="plc.interpreter.LexerTests" time="0.001"/>
-  <testcase name="[10] End of Input, eo, [e, o, [fi]], false" classname="plc.interpreter.LexerTests" time="0.001"/>
-  <testcase name="leadingWhiteSpace()" classname="plc.interpreter.LexerTests" time="0.005"/>
-  <testcase name="characterLiteral()" classname="plc.interpreter.LexerTests" time="0.001"/>
-  <testcase name="testLeading()" classname="plc.interpreter.LexerTests" time="0.001"/>
+  <testcase name="leadingWhiteSpace()" classname="plc.interpreter.LexerTests" time="0.002"/>
+  <testcase name="characterLiteral()" classname="plc.interpreter.LexerTests" time="0.0"/>
+  <testcase name="testLeading()" classname="plc.interpreter.LexerTests" time="0.0"/>
   <testcase name="testCharStream()" classname="plc.interpreter.LexerTests" time="0.001"/>
   <testcase name="[1] (, true" classname="plc.interpreter.LexerTests" time="0.001"/>
-  <testcase name="[2] #, true" classname="plc.interpreter.LexerTests" time="0.001"/>
-  <testcase name="[3]  , false" classname="plc.interpreter.LexerTests" time="0.001"/>
-  <testcase name="[4] &#9;, false" classname="plc.interpreter.LexerTests" time="0.001"/>
-  <testcase name="[5] . , true" classname="plc.interpreter.LexerTests" time="0.003">
+  <testcase name="[2] #, true" classname="plc.interpreter.LexerTests" time="0.0"/>
+  <testcase name="[3]  , false" classname="plc.interpreter.LexerTests" time="0.002"/>
+  <testcase name="[4] &#9;, false" classname="plc.interpreter.LexerTests" time="0.0"/>
+  <testcase name="[5] . , true" classname="plc.interpreter.LexerTests" time="0.002">
     <failure message="org.opentest4j.AssertionFailedError: expected: &lt;[OPERATOR=`. `@0]&gt; but was: &lt;[OPERATOR=`.`@0]&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: expected: &lt;[OPERATOR=`. `@0]&gt; but was: &lt;[OPERATOR=`.`@0]&gt;
 	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:55)
 	at org.junit.jupiter.api.AssertionUtils.failNotEqual(AssertionUtils.java:62)
@@ -189,12 +189,12 @@
 	at java.lang.Thread.run(Thread.java:748)
 </failure>
   </testcase>
-  <testcase name="[6] .., true" classname="plc.interpreter.LexerTests" time="0.0"/>
-  <testcase name="testNumberandDecimal()" classname="plc.interpreter.LexerTests" time="0.001"/>
-  <testcase name="testMultipleDecimals()" classname="plc.interpreter.LexerTests" time="0.001"/>
-  <testcase name="[1] 007.000, true" classname="plc.interpreter.LexerTests" time="0.001"/>
-  <testcase name="testPeriod()" classname="plc.interpreter.LexerTests" time="0.0"/>
-  <testcase name="operators()" classname="plc.interpreter.LexerTests" time="0.001">
+  <testcase name="[6] .., true" classname="plc.interpreter.LexerTests" time="0.001"/>
+  <testcase name="testNumberandDecimal()" classname="plc.interpreter.LexerTests" time="0.0"/>
+  <testcase name="testMultipleDecimals()" classname="plc.interpreter.LexerTests" time="0.0"/>
+  <testcase name="[1] 007.000, true" classname="plc.interpreter.LexerTests" time="0.0"/>
+  <testcase name="testPeriod()" classname="plc.interpreter.LexerTests" time="0.001"/>
+  <testcase name="operators()" classname="plc.interpreter.LexerTests" time="0.0">
     <failure message="org.opentest4j.AssertionFailedError: expected: &lt;[OPERATOR=`@`@0, OPERATOR=`#`@1, OPERATOR=`#`@2]&gt; but was: &lt;[OPERATOR=`@`@0, OPERATOR=`.#`@1]&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: expected: &lt;[OPERATOR=`@`@0, OPERATOR=`#`@1, OPERATOR=`#`@2]&gt; but was: &lt;[OPERATOR=`@`@0, OPERATOR=`.#`@1]&gt;
 	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:55)
 	at org.junit.jupiter.api.AssertionUtils.failNotEqual(AssertionUtils.java:62)
@@ -292,9 +292,9 @@
 	at java.lang.Thread.run(Thread.java:748)
 </failure>
   </testcase>
-  <testcase name="[1] &quot;&quot;, true" classname="plc.interpreter.LexerTests" time="0.0"/>
-  <testcase name="[2] &quot;abc&quot;, true" classname="plc.interpreter.LexerTests" time="0.0"/>
-  <testcase name="[3] &quot;Hello,\nWorld&quot;, true" classname="plc.interpreter.LexerTests" time="0.001"/>
+  <testcase name="[1] &quot;&quot;, true" classname="plc.interpreter.LexerTests" time="0.001"/>
+  <testcase name="[2] &quot;abc&quot;, true" classname="plc.interpreter.LexerTests" time="0.001"/>
+  <testcase name="[3] &quot;Hello,\nWorld&quot;, true" classname="plc.interpreter.LexerTests" time="0.0"/>
   <testcase name="[4] &quot;unterminated, false" classname="plc.interpreter.LexerTests" time="0.0"/>
   <testcase name="[5] &quot;invalid\escape&quot;, false" classname="plc.interpreter.LexerTests" time="0.002"/>
   <testcase name="testwhiteSpace()" classname="plc.interpreter.LexerTests" time="0.0"/>
@@ -302,10 +302,10 @@
   <testcase name="[2] is-empty?, true" classname="plc.interpreter.LexerTests" time="0.0"/>
   <testcase name="[3] &lt;=&gt;, true" classname="plc.interpreter.LexerTests" time="0.0"/>
   <testcase name="[4] 42=life, false" classname="plc.interpreter.LexerTests" time="0.0"/>
-  <testcase name="[5] why,are,there,commas,, false" classname="plc.interpreter.LexerTests" time="0.0"/>
-  <testcase name="[6] . , false" classname="plc.interpreter.LexerTests" time="0.002"/>
+  <testcase name="[5] why,are,there,commas,, false" classname="plc.interpreter.LexerTests" time="0.001"/>
+  <testcase name="[6] . , false" classname="plc.interpreter.LexerTests" time="0.001"/>
   <testcase name="[7] ?, false" classname="plc.interpreter.LexerTests" time="0.001"/>
-  <testcase name="testwhiteSpacebetween()" classname="plc.interpreter.LexerTests" time="0.001"/>
+  <testcase name="testwhiteSpacebetween()" classname="plc.interpreter.LexerTests" time="0.0"/>
   <testcase name="testDoublePeriod()" classname="plc.interpreter.LexerTests" time="0.001">
     <failure message="org.opentest4j.AssertionFailedError: expected: &lt;[OPERATOR=`(`@0, OPERATOR=`.`@1, OPERATOR=`.`@2, OPERATOR=`)`@3]&gt; but was: &lt;[OPERATOR=`(`@0, OPERATOR=`..`@1, OPERATOR=`)`@3]&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: expected: &lt;[OPERATOR=`(`@0, OPERATOR=`.`@1, OPERATOR=`.`@2, OPERATOR=`)`@3]&gt; but was: &lt;[OPERATOR=`(`@0, OPERATOR=`..`@1, OPERATOR=`)`@3]&gt;
 	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:55)
@@ -404,7 +404,7 @@
 	at java.lang.Thread.run(Thread.java:748)
 </failure>
   </testcase>
-  <testcase name="testTrailing()" classname="plc.interpreter.LexerTests" time="0.001"/>
+  <testcase name="testTrailing()" classname="plc.interpreter.LexerTests" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
