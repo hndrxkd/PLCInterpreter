@@ -140,11 +140,18 @@ public final class Interpreter {
         scope.define("/" , (Function<List<Ast> , Object>) args -> {
             List<Object> evaluated = args.stream().map(this::eval).collect(Collectors.toList());
             if(!evaluated.isEmpty()) {
-                BigDecimal result = evaluated.size() > 1 ? requireType(BigDecimal.class , evaluated.get(0)) : BigDecimal.ZERO;
+                BigDecimal result;
+
+                if (evaluated.size() > 1){
+                    result = requireType(BigDecimal.class, evaluated.get(0));
+                    evaluated = evaluated.subList(1, evaluated.size());
+                }
+                else result = BigDecimal.ONE;
 
                 for (Object obj : evaluated) {
                     result = result.divide(requireType(BigDecimal.class, obj), RoundingMode.HALF_EVEN);
                 }
+
                 return result;
             }else {
                 throw new EvalException("nah");
@@ -172,6 +179,9 @@ public final class Interpreter {
         });
         scope.define("not" , (Function<List<Ast> , Object>) args -> {
             try {
+                if(args.size() > 1 ){
+                    throw new EvalException("More than one argument");
+                }
                 boolean value = requireType(Boolean.class, eval(args.get(0)));
                 return !value;
             }catch (Exception e) {
@@ -180,7 +190,11 @@ public final class Interpreter {
         });
         scope.define("equals?" , (Function<List<Ast> , Object>) args -> {
             try {
+                if(args.size() > 2 ){
+                    throw new EvalException("More than two arguments");
+                }
                 return Objects.deepEquals(eval(args.get(0)), eval(args.get(1)));
+
             }catch (Exception e) {
                 throw new EvalException(e.getMessage());
             }
@@ -257,7 +271,7 @@ public final class Interpreter {
             try {
             List<Comparable> list = new ArrayList<>();
             for (Ast arg : args){
-                list.add(requireType(BigDecimal.class, eval(arg)));
+                list.add(requireType(Comparable.class, eval(arg)));
             }
             for (int i = 0 ; i < args.size() - 1; i++){
                if(list.get(i).compareTo(list.get(i+1)) <= 0){
@@ -274,7 +288,7 @@ public final class Interpreter {
             try {
             List<Comparable> list = new ArrayList<>();
             for (Ast arg : args){
-                list.add(requireType(BigDecimal.class, eval(arg)));
+                list.add(requireType(Comparable.class, eval(arg)));
             }
             for (int i = 0 ; i < args.size() - 1; i++){
                 if(list.get(i).compareTo(list.get(i+1)) < 0){
@@ -291,7 +305,7 @@ public final class Interpreter {
             try {
             List<Comparable> list = new ArrayList<>();
             for (Ast arg : args){
-                list.add(requireType(BigDecimal.class, eval(arg)));
+                list.add(requireType(Comparable.class, eval(arg)));
             }
             for (int i = 0 ; i < args.size() - 1; i++){
                 if(list.get(i).compareTo(list.get(i+1)) >= 0){
@@ -341,8 +355,12 @@ public final class Interpreter {
 
         });
         scope.define("while" , (Function<List<Ast> , Object>) args -> {
+            if(args.size() < 1){
+                throw new EvalException("not enough arguments for while loop");
+            }
             this.scope = new Scope(scope);
 //            Object result = null;
+
 
             while(requireType(Boolean.class , eval(args.get(0))) == Boolean.TRUE) {
                 for (Ast arg : args.subList(1, args.size())) {

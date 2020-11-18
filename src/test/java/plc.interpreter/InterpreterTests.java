@@ -254,49 +254,49 @@ final class InterpreterTests {
 
     private static Stream<Arguments> testComparisons() {
         return Stream.of(
-//                Arguments.of(">", new Ast.Term(">", Arrays.asList(
-//                        new Ast.NumberLiteral(BigDecimal.TEN),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(8)),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(7)),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(5))
-//                )), true),
-//                Arguments.of(">", new Ast.Term(">", Arrays.asList(
-//                        new Ast.NumberLiteral(BigDecimal.TEN),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(8)),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(7)),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(7))
-//                )), false),
-//                Arguments.of(">=", new Ast.Term(">=", Arrays.asList(
-//                        new Ast.NumberLiteral(BigDecimal.TEN),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(8)),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(7)),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(7)),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(5))
-//                )), true),
-//                Arguments.of("<", new Ast.Term("<", Arrays.asList(
-//                        new Ast.NumberLiteral(BigDecimal.TEN),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(18)),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(17)),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(7))
-//                )), false),
-//                Arguments.of("<", new Ast.Term("<", Arrays.asList(
-//                        new Ast.NumberLiteral(BigDecimal.TEN),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(18)),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(19)),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(19))
-//                )), false),
-//                Arguments.of("<", new Ast.Term("<", Arrays.asList(
-//                        new Ast.NumberLiteral(BigDecimal.TEN),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(18)),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(19))
-//                )), true),
-//                Arguments.of("<=", new Ast.Term("<=", Arrays.asList(
-//                        new Ast.NumberLiteral(BigDecimal.TEN),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(18)),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(19)),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(19)),
-//                        new Ast.NumberLiteral(BigDecimal.valueOf(20))
-//                )), true),
+                Arguments.of(">", new Ast.Term(">", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.TEN),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(8)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(7)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(5))
+                )), true),
+                Arguments.of(">", new Ast.Term(">", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.TEN),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(8)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(7)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(7))
+                )), false),
+                Arguments.of(">=", new Ast.Term(">=", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.TEN),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(8)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(7)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(7)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(5))
+                )), true),
+                Arguments.of("<", new Ast.Term("<", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.TEN),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(18)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(17)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(7))
+                )), false),
+                Arguments.of("<", new Ast.Term("<", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.TEN),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(18)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(19)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(19))
+                )), false),
+                Arguments.of("<", new Ast.Term("<", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.TEN),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(18)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(19))
+                )), true),
+                Arguments.of("<=", new Ast.Term("<=", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.TEN),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(18)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(19)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(19)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(20))
+                )), true),
                 Arguments.of("<=", new Ast.Term("<=", Arrays.asList(
                         new Ast.NumberLiteral(BigDecimal.TEN),
                         new Ast.StringLiteral("BigDecimal.valueOf()"),
@@ -325,12 +325,27 @@ final class InterpreterTests {
                         new Ast.NumberLiteral(BigDecimal.valueOf(19)),
                         new Ast.NumberLiteral(BigDecimal.valueOf(19))
                 )), null),
-                Arguments.of("<", new Ast.Term("<=", Arrays.asList(
-                        new Ast.NumberLiteral(BigDecimal.TEN),
-                        new Ast.Identifier("x"),
-                        new Ast.NumberLiteral(BigDecimal.valueOf(19)),
-                        new Ast.NumberLiteral(BigDecimal.valueOf(19))
-                )), true)
+                Arguments.of("<" , new Ast.Term( "<" , Arrays.asList(
+                        new Ast.StringLiteral("x"),
+                        new Ast.StringLiteral("z"),
+                        new Ast.StringLiteral("y")
+                )), false),
+                Arguments.of(">" , new Ast.Term( ">" , Arrays.asList(
+                        new Ast.StringLiteral("x"),
+                        new Ast.StringLiteral("z"),
+                        new Ast.StringLiteral("y")
+                )), false),
+                Arguments.of("<" , new Ast.Term( ">=" , Arrays.asList(
+                        new Ast.StringLiteral("x"),
+                        new Ast.StringLiteral("z"),
+                        new Ast.StringLiteral("y")
+                )), false)
+//                Arguments.of("<", new Ast.Term("<=", Arrays.asList(
+//                        new Ast.NumberLiteral(BigDecimal.TEN),
+//                        new Ast.Identifier("x"),
+//                        new Ast.NumberLiteral(BigDecimal.valueOf(19)),
+//                        new Ast.NumberLiteral(BigDecimal.valueOf(19))
+//                )), true)
         );
     }
 

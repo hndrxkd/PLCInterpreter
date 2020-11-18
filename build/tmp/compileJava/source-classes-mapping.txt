@@ -20,8 +20,8 @@ plc.interpreter/Ast.java
  plc.interpreter.Ast$NumberLiteral
  plc.interpreter.Ast$StringLiteral
  plc.interpreter.Ast$Term
+plc.interpreter/Scope.java
+ plc.interpreter.Scope
 plc.interpreter/Interpreter.java
  plc.interpreter.Interpreter
  plc.interpreter.Interpreter$1
-plc.interpreter/Scope.java
- plc.interpreter.Scope

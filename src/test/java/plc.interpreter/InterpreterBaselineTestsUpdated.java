@@ -58,6 +58,54 @@ final class InterpreterBaselineTests {
 
     @ParameterizedTest
     @MethodSource
+    void testDivision(String test, Ast ast, BigDecimal expected) {
+        test(ast, expected, Collections.emptyMap());
+    }
+
+    private static Stream<Arguments> testDivision() {
+        return Stream.of(
+                Arguments.of("Single Arguments", new Ast.Term("/", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.valueOf(.5))
+                )), BigDecimal.valueOf(2)),
+                Arguments.of("Multiple Arguments", new Ast.Term("/", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.valueOf(100)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(5)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(2))
+                )), BigDecimal.valueOf(10)),
+                Arguments.of("HALF Even Down", new Ast.Term("/", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.valueOf(9)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(2))
+                )), BigDecimal.valueOf(4)),
+                Arguments.of("HALF EVEN up", new Ast.Term("/", Arrays.asList(
+                        new Ast.NumberLiteral(BigDecimal.valueOf(11)),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(2))
+                )), BigDecimal.valueOf(6))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testEquals(String test, Ast ast, Boolean expected) {
+        test(ast, expected, Collections.emptyMap());
+    }
+
+    private static Stream<Arguments> testEquals() {
+        return Stream.of(
+                Arguments.of("Zero Arguments", new Ast.Term("equals?", Arrays.asList(
+                        new Ast.Identifier("true"),
+                        new Ast.Identifier("false"),
+                        new Ast.NumberLiteral(BigDecimal.valueOf(3))
+                )), null)
+
+        );
+    }
+
+
+
+
+
+    @ParameterizedTest
+    @MethodSource
     void testBoolean(String test, boolean value) {
         test(new Ast.Identifier(String.valueOf(value)), value, Collections.emptyMap());
     }

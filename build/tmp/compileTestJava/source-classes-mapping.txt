@@ -2,9 +2,9 @@ plc.interpreter/ParserTests.java
  plc.interpreter.ParserTests
 plc.interpreter/RegexTests.java
  plc.interpreter.RegexTests
-plc.interpreter/InterpreterBaselineTestsUpdated.java
- plc.interpreter.InterpreterBaselineTests
 plc.interpreter/LexerTests.java
  plc.interpreter.LexerTests
+plc.interpreter/InterpreterBaselineTestsUpdated.java
+ plc.interpreter.InterpreterBaselineTests
 plc.interpreter/InterpreterTests.java
  plc.interpreter.InterpreterTests
