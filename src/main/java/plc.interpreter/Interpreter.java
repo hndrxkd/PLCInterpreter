@@ -1,5 +1,7 @@
 package plc.interpreter;
 
+import com.sun.corba.se.spi.ior.ObjectKey;
+
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -242,11 +244,42 @@ public final class Interpreter {
         });
         scope.define("define" , (Function<List<Ast> , Object>) args -> {
             try {
-                if (args.size() == 2 && args.get(0) instanceof Ast.Identifier) {
+                if(args.size() != 2) {
+                    throw new EvalException("Invalid number of arguments");
+                }
+
+                if (args.get(0) instanceof Ast.Identifier) {
                     String ident = ((Ast.Identifier) args.get(0)).getName();
                     this.scope.define(ident, eval(args.get(1)));
                     return VOID;
-                } else if (args.isEmpty()) {
+                } else if (args.get(0) instanceof  Ast.Term) {
+                    String name = ((Ast.Term) args.get(0)).getName();
+                    List<String> params = ((Ast.Term) args.get(0)).getArgs().stream()
+                            .map(a -> requireType(Ast.Identifier.class, a).getName())
+                            .collect(Collectors.toList());
+
+                    Scope parent = this.scope;
+
+                    this.scope.define(name , (Function<List<Ast> , Object>) arguments -> {
+                        List<Object> eval = arguments.stream().map(this::eval).collect(Collectors.toList());
+
+                        if(params.size() != eval.size()){
+                            throw new EvalException("Invalid Number of arguments");
+                        }
+
+                        Scope current  = this.scope;
+                        this.scope = new Scope(parent);
+
+                        for (int i = 0 ; i < params.size() ; i++){
+                            this.scope.define(params.get(i), eval.get(i));
+                        }
+                        Object result = eval(args.get(1));
+
+
+                        this.scope = current;
+                        return  result;
+                    });
+                }else{
                     throw new EvalException("Expected 2 or more arguments");
                 }
 
@@ -376,21 +409,26 @@ public final class Interpreter {
         scope.define("for" , (Function<List<Ast>, Object>) args -> {
 //            this.scope = new Scope(scope);
             try {
-                String variable = requireType(Ast.Term.class, args.get(0)).getName();
-                Object test = eval(requireType(Ast.Term.class, args.get(0)).getArgs().get(0));
-
-//            Object ll = eval(requireType(Ast.Term.class, eval(args.get(0))).getArgs().get(0));
-                this.scope.define("ll", requireType(LinkedList.class, test));
-                this.scope.define(variable, requireType(LinkedList.class, test).get(0));
+                if ( args.size() != 2){
+                     throw new EvalException("missing arguments");
+                }
 
 
-                for (Object dec : requireType(LinkedList.class, test)) {
-                    this.scope.set(variable, dec);
-                    for (Ast arg : args.subList(1, args.size())) {
-                        eval(arg);
-                    }
+                scope.define(args.get(0).toString() , eval(args.get(0)) ) ;
+
+                Ast.Term variable = requireType(Ast.Term.class, eval(args.get(0)));
+                LinkedList ll = requireType(LinkedList.class , variable.getArgs().get(0));
+                this.scope = new Scope(scope);
+
+                scope.define(variable.getName() , ll.get(0));
+
+                for (Object dec : ll) {
+                    this.scope.set(variable.getName(), dec);
+                    eval(args.get(2));
 
                 }
+
+                this.scope = scope.getParent();
 
 
                 return VOID;
@@ -406,6 +444,9 @@ public final class Interpreter {
 
         scope.define("true" , Boolean.TRUE);
         scope.define("false" , Boolean.FALSE);
+//        scope.define("x", BigDecimal.valueOf(2));
+//        scope.define("y", BigDecimal.ONE);
+//        scope.define("z", BigDecimal.TEN);
         
 
         //TODO: Additional standard library functions

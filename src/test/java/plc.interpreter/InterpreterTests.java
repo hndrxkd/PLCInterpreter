@@ -140,12 +140,17 @@ final class InterpreterTests {
                         new Ast.NumberLiteral(BigDecimal.ONE),
                         new Ast.NumberLiteral(BigDecimal.valueOf(2)),
                         new Ast.NumberLiteral(BigDecimal.valueOf(3))
-                )), new LinkedList<Object>(Arrays.asList(1,2,3))),
+                )), new LinkedList<Object>(Arrays.asList(BigDecimal.valueOf(1),BigDecimal.valueOf(2),BigDecimal.valueOf(3)))),
                 Arguments.of("list", new Ast.Term("list", Arrays.asList(
                         new Ast.NumberLiteral(BigDecimal.ONE),
                         new Ast.StringLiteral("BigDecimal.valueOf(2)"),
                         new Ast.NumberLiteral(BigDecimal.valueOf(3))
-                )), null)
+                )), null),
+                Arguments.of("list", new Ast.Term("list", Arrays.asList(
+                        new Ast.Identifier("x"),
+                        new Ast.Identifier("y"),
+                        new Ast.Identifier("z")
+                )), new LinkedList<Object>(Arrays.asList(BigDecimal.valueOf(2), BigDecimal.valueOf(1), BigDecimal.valueOf(10))))
         );
     }
 
